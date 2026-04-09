@@ -1,1 +1,0 @@
-# Pfizer-segmentation-Ulcerative-Colitis
