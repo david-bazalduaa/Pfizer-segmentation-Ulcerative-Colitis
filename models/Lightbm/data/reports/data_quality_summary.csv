@@ -1,0 +1,14 @@
+check,value
+raw_rows,1800066.0
+raw_columns,75.0
+unique_hcps,20931.0
+unique_weeks,86.0
+feature_missing_rate_max_excluding_target,0.17801347283932922
+target_missing_rate_row_level,0.4315130667431083
+duplicate_hcp_week_pairs,0.0
+rows_per_hcp_min,86.0
+rows_per_hcp_median,86.0
+rows_per_hcp_max,86.0
+weeks_per_hcp_min,86.0
+weeks_per_hcp_median,86.0
+weeks_per_hcp_max,86.0
