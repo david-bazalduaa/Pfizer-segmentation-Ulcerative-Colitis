@@ -1,0 +1,4 @@
+class_name,chosen_threshold,precision_at_threshold,support_selected
+SEG_A,0.94,0.9101283880171184,701
+SEG_B,0.98,1.0,8
+SEG_C,0.99,1.0,1
