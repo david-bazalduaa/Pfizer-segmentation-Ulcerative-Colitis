@@ -1,0 +1,30 @@
+{
+  "model_name": "lightgbm_cost_sensitive",
+  "class_order": [
+    "SEG_A",
+    "SEG_B",
+    "SEG_C"
+  ],
+  "class_scaling": {
+    "SEG_A": 1.0,
+    "SEG_B": 0.85,
+    "SEG_C": 1.15
+  },
+  "optimization_target": "macro_f1",
+  "lightgbm_params": {
+    "objective": "multiclass",
+    "n_estimators": 800,
+    "learning_rate": 0.03,
+    "num_leaves": 31,
+    "max_depth": -1,
+    "min_child_samples": 40,
+    "subsample": 0.85,
+    "subsample_freq": 1,
+    "colsample_bytree": 0.85,
+    "reg_alpha": 0.0,
+    "reg_lambda": 1.0,
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbosity": -1
+  }
+}
