@@ -8,19 +8,19 @@
   "class_scaling": {
     "SEG_A": 1.0,
     "SEG_B": 0.85,
-    "SEG_C": 1.15
+    "SEG_C": 0.85
   },
   "optimization_target": "macro_f1",
   "lightgbm_params": {
     "objective": "multiclass",
-    "n_estimators": 800,
-    "learning_rate": 0.03,
-    "num_leaves": 31,
-    "max_depth": -1,
-    "min_child_samples": 40,
-    "subsample": 0.85,
+    "n_estimators": 472,
+    "learning_rate": 0.01052344504958861,
+    "num_leaves": 35,
+    "max_depth": 14,
+    "min_child_samples": 72,
+    "subsample": 0.5789063528365974,
     "subsample_freq": 1,
-    "colsample_bytree": 0.85,
+    "colsample_bytree": 0.9457420902191321,
     "reg_alpha": 0.0,
     "reg_lambda": 1.0,
     "random_state": 42,
