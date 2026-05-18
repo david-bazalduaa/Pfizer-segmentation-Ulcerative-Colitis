@@ -1,0 +1,57 @@
+# Model Comparison & Architectural Findings: XGBoost vs. CatBoost
+
+**Project:** Pfizer HCP Segmentation (Ulcerative Colitis) - Propensity Modeling
+**Objective:** Transition from an overfitted, high-dimensional baseline to a robust, business-grade Propensity Engine.
+
+---
+
+## 1. Executive Summary
+The transition from a theoretical baseline to a production-ready Machine Learning pipeline revealed critical insights regarding data dimensionality, target sparsity, and model validation. We implemented parallel pipelines for **XGBoost** and **CatBoost**, heavily fortifying both against data leakage and overfitting. 
+
+While both algorithms achieved high performance after calibration, **CatBoost** demonstrated superior out-of-the-box stability for feature handling, whereas **XGBoost** required specific formatting workarounds but offered slightly more aggressive early-stopping optimization.
+
+---
+
+## 2. Critical Findings & Pipeline Fixes
+
+### A. The "Perfect Score" Illusion (Data Leakage)
+- **Finding:** The initial XGBoost AUC-ROC of `0.9989` was artificially inflated. 
+- **Root Cause:** 
+  1. **Direct Leakage:** Features starting with `BRAND1_` were essentially predicting themselves.
+  2. **Hidden Leakage:** Several features had a Pearson Correlation > `0.90` with the target variable.
+- **Solution:** Both pipelines now incorporate a proactive "Leakage Audit" that automatically scans and drops highly correlated and explicitly forbidden features *before* training.
+
+### B. The Curse of Dimensionality & Overfitting
+- **Finding:** Training a model with 656 features on only 852 samples guarantees overfitting (the model memorizes noise instead of learning patterns).
+- **Solution:** Implemented **Dimensionality Reduction (`SelectFromModel`)**. By using a baseline model to filter the dataset down to the **Top 40 most impactful features**, we forced both XGBoost and CatBoost to learn true generalized patterns.
+
+### C. Extreme Class Imbalance & The Optuna "NaN" Crash
+- **Finding:** The dataset originally had only 3 positive cases under the strict `BRAND1_NBRX__last > 0` definition, causing Cross-Validation to fail (yielding `NaN` scores). Even after broadening the target to `BRAND1_TRX__max > 0`, the positive class prevalence hovered around **13.3%**.
+- **Solution:** 
+  1. Calculated and injected dynamic `scale_pos_weight` into both models.
+  2. Shifted the Optuna optimization metric from `ROC-AUC` to **`PR-AUC` (Average Precision)**, which is vastly superior for evaluating highly imbalanced classes.
+  3. Enforced `StratifiedKFold(n_splits=5)` with `early_stopping_rounds=25` to halt training immediately when generalization stops.
+
+---
+
+## 3. Algorithm Comparison: XGBoost vs. CatBoost
+
+| Feature / Behavior | XGBoost Pipeline | CatBoost Pipeline |
+| :--- | :--- | :--- |
+| **Feature Name Handling** | **Strict.** Crashed due to special characters (`[`, `]`, `<`) in column names. Required RegEx preprocessing. | **Flexible.** Ingested complex string feature names natively without failing. |
+| **Scikit-Learn Compatibility** | **Patch Required.** Version 2.0.x clashed with Scikit-Learn 1.7's `is_classifier` checks. Required a monkey-patch (`__sklearn_tags__`). | **Native.** Seamless integration with Scikit-Learn's `CalibratedClassifierCV` and `SelectFromModel`. |
+| **Optimization (Optuna)** | Used `hist` tree method for rapid, memory-efficient histogram-based splits. | Optimized through `l2_leaf_reg`, `bagging_temperature`, and `random_strength`. Slightly slower per iteration but highly robust to overfitting. |
+| **Probability Calibration** | Responded perfectly to Isotonic Calibration (`cv='prefit'`). | Responded perfectly to Isotonic Calibration (`cv='prefit'`). |
+
+---
+
+## 4. Explainability (SHAP) & Output Architecture
+
+Both models were successfully integrated with **`shap.TreeExplainer`** to provide "Glass-Box" transparency, which is critical for Pfizer stakeholders:
+1. **Global Summary:** Extracted the macro-drivers of adoption.
+2. **Local Waterfall:** Implemented a function to diagnose individual HCPs.
+3. **Dashboard-Ready Export:** Engineered a routine that scans every single HCP, extracts their specific **Top 5 SHAP contributing features**, and merges them with their calibrated propensity score into a highly optimized Parquet file (`hcp_propensity_results_*.parquet`).
+
+### Conclusion & Next Steps
+Both notebooks are now at a "Senior Consulting" standard. 
+**Recommendation:** Load both `.parquet` output files into the **Streamlit Dashboard** and run an A/B comparison on the calibrated probability distributions. If CatBoost yields a smoother Probability Calibration Curve (Reliability Diagram) with competitive PR-AUC, it should be selected as the production model due to its native handling of feature strings and lack of compatibility patching.
