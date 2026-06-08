@@ -1,0 +1,38 @@
+{
+    "model": "XGBClassifier",
+    "task": "SEG_A vs SEG_B vs SEG_C",
+    "selection_reason": "Candidate 58 selected due to better SEG_C recall while maintaining competitive Macro F1.",
+    "best_params": {
+        "subsample": 0.9,
+        "reg_lambda": 1,
+        "reg_alpha": 0.1,
+        "n_estimators": 200,
+        "min_child_weight": 1,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "gamma": 0.05,
+        "colsample_bytree": 0.75
+    },
+    "decision_rule": "argmax over predicted class probabilities",
+    "label_mapping": {
+        "0": "SEG_A",
+        "1": "SEG_B",
+        "2": "SEG_C"
+    },
+    "test_metrics": {
+        "accuracy": 0.6449579831932774,
+        "macro_f1": 0.5792501739473731,
+        "weighted_f1": 0.6479920763036838,
+        "SEG_A_precision": 0.7828525641025641,
+        "SEG_A_recall": 0.7626854020296643,
+        "SEG_A_f1": 0.7726374060893634,
+        "SEG_B_precision": 0.5787878787878787,
+        "SEG_B_recall": 0.5701492537313433,
+        "SEG_B_f1": 0.5744360902255639,
+        "SEG_C_precision": 0.3728813559322034,
+        "SEG_C_recall": 0.41025641025641024,
+        "SEG_C_f1": 0.390677025527192,
+        "bc_recall_avg": 0.49020283199387676,
+        "custom_score": 0.5662843518325863
+    }
+}

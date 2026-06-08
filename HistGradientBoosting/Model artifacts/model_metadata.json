@@ -1,0 +1,23 @@
+{
+    "best_model_name": "HistGradientBoosting",
+    "best_threshold": 0.45,
+    "task": "SEG_A vs SEG_BC",
+    "label_mapping": {
+        "0": "SEG_A",
+        "1": "SEG_BC"
+    },
+    "test_metrics": {
+        "model": "HistGradientBoosting",
+        "threshold": 0.45,
+        "accuracy": 0.7722689075630252,
+        "macro_f1": 0.7703775750550399,
+        "weighted_f1": 0.7719711978163979,
+        "roc_auc": 0.8518300292864351,
+        "SEG_A_precision": 0.7809885931558935,
+        "SEG_A_recall": 0.8017174082747853,
+        "SEG_A_f1": 0.7912172573189522,
+        "SEG_BC_precision": 0.7615023474178404,
+        "SEG_BC_recall": 0.737943585077343,
+        "SEG_BC_f1": 0.7495378927911276
+    }
+}
